@@ -8,16 +8,21 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class UsersExport implements FromCollection, WithHeadings
 {
-    
+
     /**
      * @return \Illuminate\Support\Collection
-     */    
+     */
     public function collection()
     {
-        return User::select("id", "name", "email")->get();
+        try {
+            return User::select("id", "name", "email")->get();
+        } catch (\Exception $e) {
+            report($e);
+            return [];
+        }
     }
 
-    
+
     /**
      * Get the column headings for the export.
      *

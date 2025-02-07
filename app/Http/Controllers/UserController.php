@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\UsersExport;
+use App\Http\Requests\UserImportRequest;
 use App\Imports\UsersImport;
 use App\Models\User;
 
 class UserController extends Controller
 {
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -18,12 +18,15 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::get();
-
-        return view('users', compact('users'));
+        try {
+            return view('users')->with(['users' => User::get()]);
+        } catch (\Exception $e) {
+            report($e);
+            return back()->with('error', 'An error occurred while fetching users.');
+        }
     }
 
-   
+
     /**
      * Download an Excel file containing all users.
      *
@@ -31,7 +34,12 @@ class UserController extends Controller
      */
     public function export()
     {
-        return Excel::download(new UsersExport, 'users.xlsx');
+        try {
+            return Excel::download(new UsersExport, 'users.xlsx');
+        } catch (\Exception $e) {
+            report($e);
+            return back()->with('error', 'An error occurred while exporting users.');
+        }
     }
 
     /**
@@ -40,15 +48,14 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function import(Request $request)
+    public function import(UserImportRequest $request)
     {
-        // Validate incoming request data
-        $request->validate([
-            'file' => 'required|max:2048',
-        ]);
-
-        Excel::import(new UsersImport, $request->file('file'));
-
-        return back()->with('success', 'Users imported successfully.');
+        try {
+            Excel::import(new UsersImport, $request->file('file'));
+            return back()->with('success', 'Users imported successfully.');
+        } catch (\Exception $e) {
+            report($e);
+            return back()->with('error', 'An error occurred while importing users.');
+        }
     }
 }

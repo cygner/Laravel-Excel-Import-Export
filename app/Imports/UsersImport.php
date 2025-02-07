@@ -19,11 +19,16 @@ class UsersImport implements ToModel, WithHeadingRow, WithValidation
      */
     public function model(array $row)
     {
-        User::create([
-            'name' => $row['name'],
-            'email' => $row['email'],
-            'password' => Hash::make($row['password']),
-        ]);
+        try {
+            User::create([
+                'name' => $row['name'],
+                'email' => $row['email'],
+                'password' => Hash::make($row['password']),
+            ]);
+        } catch (\Exception $e) {
+            report($e);
+            return back()->with('error', 'An error occurred while importing users.');
+        }
     }
 
     

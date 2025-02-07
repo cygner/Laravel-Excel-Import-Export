@@ -66,6 +66,11 @@ These instructions will get you a copy of the project up and running on your loc
   ```
 - **Visit** `http://localhost:8000/` in your web browser to view the application.
 
-### Enjoy!
+### Next Steps
 
-Thank you for using this project!
+Now that you have the application up and running, you can start exploring and customizing it to fit your needs. You can:
+
+- Experiment with different data sets and import formats to see how the application handles them.
+- Customize the User model and database schema to fit your specific needs.
+- Explore the codebase and learn more about how the application is built and how it works.
+- Have fun and happy coding!
